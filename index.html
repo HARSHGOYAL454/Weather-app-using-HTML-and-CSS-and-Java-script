@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather APP - Easy Tutorials</title>
+    <link rel = "stylesheet" href="style.css">
+</head>
+<body>
+    <div class="card">
+        <div class="search">
+            <input type="text" placeholder="enter city name" 
+            spellcheck = "false">
+            <button><img src="icons8-google-web-search-30.png" alt="search icon"></button>
+        </div>
+        <div class="error">
+            <p>Invalid city name</p>
+
+        </div>
+        <div class="weather">
+
+            <img class="weather-icon" src="https://cdn-icons-png.flaticon.com/512/7038/7038403.png">
+
+            <h1 class="temp">22°C</h1>
+            <h2 class="city">New York</h2>
+            <div class="details">
+                <div class="col">
+                    <img src="https://cdn-icons-png.flaticon.com/512/219/219816.png">
+                    <div>
+                        <p class="humidity">50%</p>
+                        <p>Humidity</p>
+                    </div>
+                </div>
+                 <div class="col">
+                    <img src="https://thumbs.dreamstime.com/b/vector-illustration-wind-icon-isolated-white-wind-icon-102759109.jpg">
+                    <div>
+                        
+                        <p class="wind">15Km/h</p>
+                        <p>Wind speed</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+   <script>
+const apiKey = "77c69a3a6ce093b011a6f798740ae13b";
+const apiUrl = "https://api.openweathermap.org/data/2.5/weather?units=metric&q=";
+
+const searchBox = document.querySelector(".search input");
+const searchBtn = document.querySelector(".search button");
+const weatherIcon = document.querySelector(".weather-icon");
+
+async function checkWeather(city){
+
+    const response = await fetch(apiUrl + city + `&appid=${apiKey}`);
+    const data = await response.json();
+
+    if(data.cod == "404"){
+        document.querySelector(".error").style.display = "block";
+        document.querySelector(".weather").style.display = "none";
+        return;
+    }
+
+    document.querySelector(".error").style.display = "none";
+
+    document.querySelector(".city").innerHTML = data.name;
+    document.querySelector(".temp").innerHTML = Math.round(data.main.temp) + "°C";
+    document.querySelector(".humidity").innerHTML = data.main.humidity + "%";
+    document.querySelector(".wind").innerHTML = data.wind.speed + " km/h";
+
+    if(data.weather[0].main == "Clouds"){
+        weatherIcon.src = "https://cdn-icons-png.flaticon.com/512/414/414825.png";
+    }
+    else if(data.weather[0].main == "Clear"){
+        weatherIcon.src = "https://cdn-icons-png.flaticon.com/512/869/869869.png";
+    }
+    else if(data.weather[0].main == "Rain"){
+        weatherIcon.src = "https://cdn-icons-png.flaticon.com/512/1163/1163624.png";
+    }
+    else if(data.weather[0].main == "Drizzle"){
+        weatherIcon.src = "https://cdn-icons-png.flaticon.com/512/3076/3076129.png";
+    }
+    else if(data.weather[0].main == "Mist"){
+        weatherIcon.src = "https://cdn-icons-png.flaticon.com/512/4005/4005901.png";
+    }
+
+    document.querySelector(".weather").style.display = "block";
+}
+
+searchBtn.addEventListener("click", () => {
+    if(searchBox.value !== ""){
+        checkWeather(searchBox.value);
+    }
+});
+</script>
+
+</body>
+</html>
